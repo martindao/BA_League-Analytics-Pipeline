@@ -1,0 +1,115 @@
+###
+### A complete description of a Prefect Deployment for flow 'All Leagues Complete ETL'
+###
+name: ETL All Leagues Block
+description: |-
+  Complete all flow, but for all leagues.
+  Args:
+      queue (str): The queue type to filter for. (legal values: RANKED_SOLO_5x5, RANKED_FLEX_SR, RANKED_FLEX_TT)
+      pages (int): The number of pages to return. (legal range: 1-100). (default: 1)
+      regions (list[str]): A list of regions to filter for. Defaults to all regions if not specified.(legal values: ["ph2", "eun1", "euw1", "jp1", "kr", "la1", "la2", "na1", "oc1", "ru", "sg2", "th2", "tr1", "tw2", "vn2","br1"]).
+      ACCOUNT_INPUT_LIMIT (int): The maximum number of account IDs to be sent to the API. Account IDs received from the API are not limited.(default: None)
+      MATCH_INPUT_LIMIT (int): The maximum number of match IDs to be sent to the API. Match IDs received from the API are not limited.(default: None)
+      API_KEYS (list[str]): A list of API keys to use for the request. If None, the program will use the API_KEYS provided in ../configs/flows_config.ini.  Useful if the user has an application API. (default: None)
+      MAXIMUM_CONCURRENT_REQUESTS (int): The maximum number of concurrent requests to make. If instabilities or crashes occur, lower the maximum amount.(default: 100)
+  Returns:
+      None
+version: e2149b7f1145790baf63965ed8b907f1
+# The work queue that will handle this deployment's runs
+work_queue_name: default
+work_pool_name: null
+tags: []
+parameters: {}
+schedule: null
+is_schedule_active: null
+infra_overrides: {}
+infrastructure:
+  type: process
+  env: {}
+  labels: {}
+  name: null
+  command: null
+  stream_output: true
+  working_dir: null
+  block_type_slug: process
+  _block_type_slug: process
+
+###
+### DO NOT EDIT BELOW THIS LINE
+###
+flow_name: All Leagues Complete ETL
+manifest_path: null
+storage:
+  bucket_path: zoomcamp-storage-block
+  azure_storage_connection_string: '**********'
+  azure_storage_account_name: null
+  azure_storage_account_key: null
+  azure_storage_tenant_id: null
+  azure_storage_client_id: null
+  azure_storage_client_secret: null
+  azure_storage_anon: false
+  _block_document_id: 8302b7ed-f39a-4228-9a89-781f723a4aa7
+  _block_document_name: azure-block
+  _is_anonymous: false
+  block_type_slug: azure
+  _block_type_slug: azure
+path: ''
+entrypoint: flows\all_flows.py:etl_all_league
+parameter_openapi_schema:
+  title: Parameters
+  type: object
+  properties:
+    queue:
+      title: queue
+      description: 'The queue type to filter for. (legal values: RANKED_SOLO_5x5,
+        RANKED_FLEX_SR, RANKED_FLEX_TT)'
+      position: 0
+      type: string
+    pages:
+      title: pages
+      description: 'The number of pages to return. (legal range: 1-100). (default:
+        1)'
+      default: 1
+      position: 1
+      type: integer
+    regions:
+      title: regions
+      description: 'A list of regions to filter for. Defaults to all regions if not
+        specified.(legal values: ["ph2", "eun1", "euw1", "jp1", "kr", "la1", "la2",
+        "na1", "oc1", "ru", "sg2", "th2", "tr1", "tw2", "vn2","br1"]).'
+      position: 2
+      type: array
+      items:
+        type: string
+    ACCOUNT_INPUT_LIMIT:
+      title: ACCOUNT_INPUT_LIMIT
+      description: 'The maximum number of account IDs to be sent to the API. Account
+        IDs received from the API are not limited.(default: None)'
+      position: 3
+      type: integer
+    MATCH_INPUT_LIMIT:
+      title: MATCH_INPUT_LIMIT
+      description: 'The maximum number of match IDs to be sent to the API. Match IDs
+        received from the API are not limited.(default: None)'
+      position: 4
+      type: integer
+    API_KEYS:
+      title: API_KEYS
+      description: 'A list of API keys to use for the request. If None, the program
+        will use the API_KEYS provided in ../configs/flows_config.ini.  Useful if
+        the user has an application API. (default: None)'
+      position: 5
+      type: array
+      items:
+        type: string
+    MAXIMUM_CONCURRENT_REQUESTS:
+      title: MAXIMUM_CONCURRENT_REQUESTS
+      description: 'The maximum number of concurrent requests to make. If instabilities
+        or crashes occur, lower the maximum amount.(default: 100)'
+      default: 500
+      position: 6
+      type: integer
+  required:
+  - queue
+  definitions: null
+timestamp: '2023-04-20T12:14:11.727789+00:00'

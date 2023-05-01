@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure Data Pipeline Workflow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+
+        .workflow-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #e8e8e8;
+            border-radius: 10px;
+            padding: 30px;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .azure-header {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .azure-logo {
+            color: #0078d4;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .managed-by {
+            position: static;
+            width: 100%;
+            text-align: right;
+            font-size: 18px;
+            color: #623ce4;
+            margin-bottom: 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .main-workflow {
+            margin-top: 60px;
+            border: 3px solid #333;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.7);
+            padding: 40px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .workflow-section {
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title {
+            font-size: 18px;
+            color: #999;
+            margin-bottom: 15px;
+            font-weight: 300;
+        }
+
+        .source-section {
+            border: 2px dashed #666;
+            padding: 20px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.8);
+        }
+
+        .data-dragon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dragon-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #1e3a8a, #3b82f6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dragon-icon::before {
+            content: "🐲";
+            font-size: 40px;
+        }
+
+        .service-badge {
+            background: #dc2626;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            margin-top: 5px;
+        }
+
+        .service-name {
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .ingestion-section {
+            border: 2px dashed #666;
+            padding: 20px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .prefect-component {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .prefect-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #0ea5e9, #38bdf8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+
+        .container-component {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #7c3aed, #a855f7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+
+        .data-lake-section {
+            text-align: center;
+        }
+
+        .blob-storage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .blob-icon {
+            width: 80px;
+            height: 80px;
+            background: #0078d4;
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .data-warehousing-section {
+            border: 2px dashed #666;
+            padding: 20px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .databricks-component {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .databricks-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #dc2626, #ef4444);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+
+        .spark-component {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .spark-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #ea580c, #f97316);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+
+        .compute-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 5px;
+        }
+
+        .visualization-section {
+            text-align: center;
+        }
+
+        .powerbi-component {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .powerbi-icon {
+            width: 80px;
+            height: 60px;
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .dbt-section {
+            position: absolute;
+            bottom: -80px;
+            right: 240px;
+            border: 2px dashed #666;
+            padding: 15px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.9);
+            text-align: center;
+        }
+
+        .dbt-component {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .dbt-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #ef4444, #f87171);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+
+        .arrow {
+            font-size: 24px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .vertical-arrow {
+            position: absolute;
+            bottom: -20px;
+            right: 50%;
+            transform: translateX(50%);
+            font-size: 20px;
+            color: #333;
+        }
+
+        .component-label {
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        .section-label {
+            font-size: 10px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    <div class="workflow-container">
+        <div class="azure-header">
+            <div class="azure-logo">▲ Azure</div>
+        </div>
+
+        <div class="managed-by">Managed by Terraform</div>
+
+        <div class="main-workflow">
+            <!-- Source Section -->
+            <div class="workflow-section">
+                <div class="section-title">Source</div>
+                <div class="source-section">
+                    <div class="data-dragon">
+                        <div class="dragon-icon"></div>
+                        <div class="service-badge">API Service</div>
+                        <div class="service-name">Data Dragon</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow">→</div>
+
+            <!-- Ingestion Section -->
+            <div class="workflow-section">
+                <div class="section-title">Ingestion</div>
+                <div class="ingestion-section">
+                    <div class="prefect-component">
+                        <div class="prefect-icon">P</div>
+                        <div class="component-label">Prefect</div>
+                    </div>
+                    <div class="container-component">
+                        <div class="container-icon">⚏</div>
+                        <div class="component-label">Container<br>Instance</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow">→</div>
+
+            <!-- Data Lake Section -->
+            <div class="workflow-section">
+                <div class="section-title">Data Lake</div>
+                <div class="blob-storage">
+                    <div class="blob-icon">10<br>01</div>
+                    <div class="component-label">Blob Storage</div>
+                </div>
+            </div>
+
+            <div class="arrow">→</div>
+
+            <!-- Data Warehousing Section -->
+            <div class="workflow-section">
+                <div class="section-title">Data Warehousing</div>
+                <div class="data-warehousing-section">
+                    <div class="databricks-component">
+                        <div class="databricks-icon">▣</div>
+                        <div class="component-label">databricks</div>
+                    </div>
+                    <div class="spark-component">
+                        <div class="compute-label">Compute Engine</div>
+                        <div class="spark-icon">⚡</div>
+                        <div class="component-label">spark</div>
+                    </div>
+                </div>
+                <div class="vertical-arrow" style="left:55%;">↑</div>
+<div class="vertical-arrow" style="left:45%;transform: translateX(0%) rotate(180deg);">↑</div>
+            </div>
+
+            <div class="arrow">→</div>
+
+            <!-- Visualization Section -->
+            <div class="workflow-section">
+                <div class="section-title">Visualisation</div>
+                <div class="powerbi-component">
+                    <div class="powerbi-icon">📊</div>
+                    <div class="component-label">Power BI</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DBT Section - positioned to align 90-degree under Data Warehousing -->
+        <div class="dbt-section">
+            <div class="dbt-component">
+                <div class="dbt-icon">✕</div>
+                <div class="component-label">dbt</div>
+                <div class="section-label">Warehousing Solution</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
